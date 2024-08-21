@@ -102,7 +102,7 @@ const VoiceRecorder: React.FC = () => {
     formData.append('file', audioBlob, `${nombreArchivo}.wav`);
 
     try {
-      const response = await fetch('https://hook.us2.make.com/62ot7lq0m2pq9dc9x50v4dlq95y6b86p', {
+      const response = await fetch('https://hook.us2.make.com/qbm58q7yanpmjw6rr6az3gqtq3ouexx4', {
         method: 'POST',
         body: formData,
       });
