@@ -137,12 +137,17 @@ const VoiceRecorder: React.FC = () => {
 
   return (
     <div
-    className="flex items-center justify-center h-screen w-screen"
+    className="flex items-center justify-center min-h-screen w-full"
     style={{
       backgroundImage: "url('/h6.png')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
+      borderRadius: '10px',
+      width: "100%",
+      height: "100vh",
+      margin: 0,
+      padding: 20,
     }}
   >
     <div className="p-4 max-w-md w-full bg-white bg-opacity-25 rounded-lg shadow-lg">
@@ -155,14 +160,14 @@ const VoiceRecorder: React.FC = () => {
         <button
           onClick={iniciarGrabacion}
           disabled={estaGrabando}
-          className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto"
+          className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
         >
           Iniciar
         </button>
         <button
           onClick={detenerGrabacion}
           disabled={!estaGrabando}
-          className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto"
+          className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
         >
           Stop
         </button>
@@ -178,13 +183,13 @@ const VoiceRecorder: React.FC = () => {
             />
             <button
               onClick={manejarDescarga}
-              className="mt-4 inline-block px-4 py-2 bg-indigo-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto"
+              className="mt-4 inline-block px-4 py-2 bg-indigo-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
             >
               Enviar
             </button>
             <button
               onClick={recargarPagina}
-              className="px-4 py-2 bg-yellow-500 text-white rounded-full shadow-lg w-full sm:w-auto mt-4"
+              className="px-4 py-2 bg-yellow-500 text-white rounded-full shadow-lg w-full sm:w-auto mt-4 transform transition-transform duration-200 active:scale-95"
             >
               Nuevo
             </button>
@@ -193,7 +198,7 @@ const VoiceRecorder: React.FC = () => {
       </div>
       {urlAudio && (
         <div className="mt-6">
-          <h2 className="text-xl mb-4">Reproducción</h2>
+          {/* <h2 className="text-xl mb-4">Reproducción</h2> */}
           <audio src={urlAudio} controls className="w-full" />
         </div>
       )}
