@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 const VoiceRecorder: React.FC = () => {
   const [estaGrabando, setEstaGrabando] = useState<boolean>(false);
   const [urlAudio, setUrlAudio] = useState<string | null>(null);
-  const [nombreArchivo, setNombreArchivo] = useState<string>("Paciente: ");
+  const [nombreArchivo, setNombreArchivo] = useState<string>("Reunión: ");
   const [email, setEmail] = useState<string>("");  // New state for email
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -104,7 +104,7 @@ const VoiceRecorder: React.FC = () => {
     formData.append('email', email); // Include email in the form data
 
     try {
-      const response = await fetch('https://hook.us2.make.com/qbm58q7yanpmjw6rr6az3gqtq3ouexx4', {
+      const response = await fetch('https://hook.us2.make.com/n8bndbb9ipfw4yz1p9x6i9u5lngsq5ce', {
         method: 'POST',
         body: formData,
       });
@@ -141,7 +141,7 @@ const VoiceRecorder: React.FC = () => {
     <div
     className="flex items-center justify-center min-h-screen w-full"
     style={{
-      backgroundImage: "url('/h6.png')",
+      backgroundImage: "url('/note2.png')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
@@ -154,7 +154,7 @@ const VoiceRecorder: React.FC = () => {
   >
     <div className="p-4 max-w-md w-full bg-white bg-opacity-25 rounded-lg shadow-lg">
       <h1 style={{ fontSize: "2rem", marginBottom: "20px", textAlign: "center", color: "darkblue", fontWeight: "bold" }}>
-        🎙️ Consulta IA
+        🎙️ Meeting IA
       </h1>
       <canvas ref={canvasRef} width={300} height={80} className="w-full mb-4" />
       <div className="mb-6 flex flex-col space-y-4 items-center">
