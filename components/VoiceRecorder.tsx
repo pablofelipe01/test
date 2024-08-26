@@ -6,6 +6,7 @@ const VoiceRecorder: React.FC = () => {
   const [estaGrabando, setEstaGrabando] = useState<boolean>(false);
   const [urlAudio, setUrlAudio] = useState<string | null>(null);
   const [nombreArchivo, setNombreArchivo] = useState<string>("Paciente: ");
+  const [email, setEmail] = useState<string>("");  // New state for email
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -100,6 +101,7 @@ const VoiceRecorder: React.FC = () => {
   const enviarAlWebhook = async (audioBlob: Blob) => {
     const formData = new FormData();
     formData.append('file', audioBlob, `${nombreArchivo}.wav`);
+    formData.append('email', email); // Include email in the form data
 
     try {
       const response = await fetch('https://hook.us2.make.com/qbm58q7yanpmjw6rr6az3gqtq3ouexx4', {
@@ -174,11 +176,19 @@ const VoiceRecorder: React.FC = () => {
         {urlAudio && (
           <>
             <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="px-2 py-1 border border-gray-300 rounded text-black"
+              placeholder="Correo electrónico"
+            />
+            <input
               id="nombreArchivo"
               type="text"
               value={nombreArchivo}
               onChange={(e) => setNombreArchivo(e.target.value)}
-              className="px-2 py-1 border border-gray-300 rounded text-black"
+              className="px-2 py-1 border border-gray-300 rounded text-black mt-2"
               placeholder="Nombre del paciente"
             />
             <button
@@ -198,7 +208,6 @@ const VoiceRecorder: React.FC = () => {
       </div>
       {urlAudio && (
         <div className="mt-6">
-          {/* <h2 className="text-xl mb-4">Reproducción</h2> */}
           <audio src={urlAudio} controls className="w-full" />
         </div>
       )}
