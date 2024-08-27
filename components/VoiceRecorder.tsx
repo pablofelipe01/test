@@ -105,7 +105,7 @@ const VoiceRecorder: React.FC = () => {
 
     try {
       const response = await fetch('https://hook.us2.make.com/n8bndbb9ipfw4yz1p9x6i9u5lngsq5ce', {
-        method: 'POST',
+        method: 'POST',             
         body: formData,
       });
 
