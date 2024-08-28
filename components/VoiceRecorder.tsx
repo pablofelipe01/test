@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 const VoiceRecorder: React.FC = () => {
   const [estaGrabando, setEstaGrabando] = useState<boolean>(false);
   const [urlAudio, setUrlAudio] = useState<string | null>(null);
-  const [nombreArchivo, setNombreArchivo] = useState<string>("Meeting: ");
+  const [nombreArchivo, setNombreArchivo] = useState<string>("Test 1");
   const [email, setEmail] = useState<string>("");  // New state for email
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -104,7 +104,7 @@ const VoiceRecorder: React.FC = () => {
     formData.append('email', email); // Include email in the form data
 
     try {
-      const response = await fetch('https://hook.us2.make.com/sl7rdgf5a7gis88tfd9jqmepdo25qa0k', {
+      const response = await fetch('https://hook.us2.make.com/44y6brd1r5ixmctjkiijt9c946vbrjeq', {
         method: 'POST',
         body: formData,
       });
@@ -141,7 +141,7 @@ const VoiceRecorder: React.FC = () => {
     <div
     className="flex items-center justify-center min-h-screen w-full"
     style={{
-      backgroundImage: "url('/note2.png')",
+      backgroundImage: "url('/Assitant.png')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
@@ -153,12 +153,12 @@ const VoiceRecorder: React.FC = () => {
     }}
   >
     <div className="p-4 max-w-md w-full bg-white bg-opacity-25 rounded-lg shadow-lg">
-      <h1 style={{ fontSize: "2rem", marginBottom: "20px", textAlign: "center", color: "darkblue", fontWeight: "bold" }}>
-        🎙️ Abogado IA
+      <h1 style={{ fontSize: "3rem", marginBottom: "20px", textAlign: "center", color: "black", fontWeight: "bold" }}>
+        🎙️ Assistant IA
       </h1>
       <canvas ref={canvasRef} width={300} height={80} className="w-full mb-4" />
       <div className="mb-6 flex flex-col space-y-4 items-center">
-        <i className="fas fa-microphone-alt text-6xl mb-2" style={{ color: "darkblue" }}></i>
+        <i className="fas fa-microphone-alt text-6xl mb-2" style={{ color: "black" }}></i>
         <button
           onClick={iniciarGrabacion}
           disabled={estaGrabando}
@@ -183,14 +183,18 @@ const VoiceRecorder: React.FC = () => {
               className="px-2 py-1 border border-gray-300 rounded text-black"
               placeholder="Correo electrónico"
             />
-            <input
+            <select
               id="nombreArchivo"
-              type="text"
               value={nombreArchivo}
               onChange={(e) => setNombreArchivo(e.target.value)}
               className="px-2 py-1 border border-gray-300 rounded text-black mt-2"
-              placeholder="Nombre del paciente"
-            />
+            >
+              <option value="Test 1">Test 1</option>
+              <option value="Test 2">Test 2</option>
+              <option value="Test 3">Test 3</option>
+              <option value="Test 4">Test 4</option>
+              <option value="Test 5">Test 5</option>
+            </select>
             <button
               onClick={manejarDescarga}
               className="mt-4 inline-block px-4 py-2 bg-indigo-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
