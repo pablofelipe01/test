@@ -7,7 +7,11 @@ const VoiceRecorder: React.FC = () => {
   const [urlAudio, setUrlAudio] = useState<string | null>(null);
   const [nombreArchivo, setNombreArchivo] = useState<string>("Test 1");
   const [email, setEmail] = useState<string>("");
-  const [cargando, setCargando] = useState<boolean>(false); // Estado para el spinner
+  const [emailSubject, setEmailSubject] = useState<string>("");
+  const [cargando, setCargando] = useState<boolean>(false);
+  const [cargandoEmail, setCargandoEmail] = useState<boolean>(false);
+  const [cargandoCalendario, setCargandoCalendario] = useState<boolean>(false);
+  const [cargandoToDo, setCargandoToDo] = useState<boolean>(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -70,10 +74,10 @@ const VoiceRecorder: React.FC = () => {
 
       analyser.getByteTimeDomainData(dataArray);
 
-      ctx!.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+      ctx!.clearRect(0, 0, canvas.width, canvas.height);
 
       ctx!.lineWidth = 2;
-      ctx!.strokeStyle = "rgb(255, 0, 0)"; // Línea roja
+      ctx!.strokeStyle = "rgb(255, 0, 0)";
 
       ctx!.beginPath();
       const sliceWidth = (canvas.width * 1.0) / bufferLength;
@@ -99,13 +103,16 @@ const VoiceRecorder: React.FC = () => {
     draw();
   };
 
-  const enviarAlWebhook = async (audioBlob: Blob) => {
+  const enviarAlWebhook = async (audioBlob: Blob, webhookUrl: string, isEmail: boolean) => {
     const formData = new FormData();
     formData.append('file', audioBlob, `${nombreArchivo}.wav`);
-    formData.append('email', email); // Include email in the form data
+    formData.append('email', email);
+    if (isEmail) {
+      formData.append('subject', emailSubject);
+    }
 
     try {
-      const response = await fetch('https://hook.us2.make.com/44y6brd1r5ixmctjkiijt9c946vbrjeq', {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         body: formData,
       });
@@ -120,13 +127,11 @@ const VoiceRecorder: React.FC = () => {
 
   const manejarDescarga = async () => {
     if (urlAudio) {
-      setCargando(true);  // Mostrar el spinner
-
+      setCargando(true);
       const response = await fetch(urlAudio);
       const audioBlob = await response.blob();
-      await enviarAlWebhook(audioBlob);
+      await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/44y6brd1r5ixmctjkiijt9c946vbrjeq', false);
 
-      // Iniciar descarga del archivo
       const link = document.createElement('a');
       link.href = urlAudio;
       link.download = `${encodeURIComponent(nombreArchivo || "grabacion")}.wav`;
@@ -134,13 +139,54 @@ const VoiceRecorder: React.FC = () => {
       link.click();
       document.body.removeChild(link);
 
-      setCargando(false);  // Ocultar el spinner
+      setCargando(false);
+    }
+  };
+
+  const manejarEnvioEmail = async () => {
+    if (urlAudio) {
+      setCargandoEmail(true);
+      const response = await fetch(urlAudio);
+      const audioBlob = await response.blob();
+      await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/bfh9n564p81snvtergwvw7ekm6vk7f1e', true);
+      setCargandoEmail(false);
+    }
+  };
+
+  const manejarEnvioCalendario = async () => {
+    if (urlAudio) {
+      setCargandoCalendario(true);
+      const response = await fetch(urlAudio);
+      const audioBlob = await response.blob();
+      await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/howh6egekmexzxv4add7k8a6uiozft3s', false);
+      setCargandoCalendario(false);
+    }
+  };
+
+  const manejarEnvioToDo = async () => {
+    if (urlAudio) {
+      setCargandoToDo(true);
+      const response = await fetch(urlAudio);
+      const audioBlob = await response.blob();
+      await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/6270ep5hu57b6x74qlf5y4pzp3nkrxb8', false);
+      setCargandoToDo(false);
     }
   };
 
   const recargarPagina = () => {
     window.location.reload();
   };
+
+  const buttonClass = "inline-block px-4 py-2 bg-blue-900 bg-opacity-50 text-white rounded-full shadow-lg text-center w-12 h-12 transform transition-transform duration-200 active:scale-95 border border-white";
+  const homeButtonClass = "px-4 py-2 bg-blue-900 bg-opacity-50 text-white rounded-full shadow-lg w-full sm:w-auto mt-4 transform transition-transform duration-200 active:scale-95 border border-white";
+
+  const FuturisticSpinner = () => (
+    <div className="relative w-12 h-12">
+      <div className="absolute inset-0 border-2 border-blue-500 rounded-full animate-ping"></div>
+      <div className="absolute inset-0 border-2 border-blue-300 rounded-full animate-pulse"></div>
+      <div className="absolute inset-2 border-2 border-white rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
     <div
@@ -167,14 +213,14 @@ const VoiceRecorder: React.FC = () => {
           <button
             onClick={iniciarGrabacion}
             disabled={estaGrabando}
-            className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
+            className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95 border border-white"
           >
             Iniciar
           </button>
           <button
             onClick={detenerGrabacion}
             disabled={!estaGrabando}
-            className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
+            className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95 border border-white"
           >
             Stop
           </button>
@@ -185,14 +231,22 @@ const VoiceRecorder: React.FC = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="px-2 py-1 border border-gray-300 rounded text-black"
+                className="px-2 py-1 border border-gray-300 rounded text-black w-full"
                 placeholder="Correo electrónico"
+              />
+              <input
+                id="emailSubject"
+                type="text"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                className="px-2 py-1 border border-gray-300 rounded text-black w-full"
+                placeholder="Asunto del correo"
               />
               <select
                 id="nombreArchivo"
                 value={nombreArchivo}
                 onChange={(e) => setNombreArchivo(e.target.value)}
-                className="px-2 py-1 border border-gray-300 rounded text-black mt-2"
+                className="px-2 py-1 border border-gray-300 rounded text-black mt-2 w-full"
               >
                 <option value="Test 1">Test 1</option>
                 <option value="Test 2">Test 2</option>
@@ -200,25 +254,58 @@ const VoiceRecorder: React.FC = () => {
                 <option value="Test 4">Test 4</option>
                 <option value="Test 5">Test 5</option>
               </select>
-              {cargando ? (
-                <div className="mt-4 flex justify-center">
-                  <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full text-blue-500" role="status">
-                    <span className="visually-hidden">Cargando...</span>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={manejarDescarga}
-                  className="mt-4 inline-block px-4 py-2 bg-indigo-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
-                >
-                  Enviar
-                </button>
-              )}
+              <div className="flex justify-center space-x-2 mt-4">
+                {cargando ? (
+                  <FuturisticSpinner />
+                ) : (
+                  <button
+                    onClick={manejarDescarga}
+                    className={buttonClass}
+                    aria-label="Meeting"
+                  >
+                    🤝
+                  </button>
+                )}
+                {cargandoEmail ? (
+                  <FuturisticSpinner />
+                ) : (
+                  <button
+                    onClick={manejarEnvioEmail}
+                    className={buttonClass}
+                    aria-label="Email"
+                  >
+                    📧
+                  </button>
+                )}
+                {cargandoCalendario ? (
+                  <FuturisticSpinner />
+                ) : (
+                  <button
+                    onClick={manejarEnvioCalendario}
+                    className={buttonClass}
+                    aria-label="Calendario"
+                  >
+                    📅
+                  </button>
+                )}
+                {cargandoToDo ? (
+                  <FuturisticSpinner />
+                ) : (
+                  <button
+                    onClick={manejarEnvioToDo}
+                    className={buttonClass}
+                    aria-label="ToDo"
+                  >
+                    ✅
+                  </button>
+                )}
+              </div>
               <button
                 onClick={recargarPagina}
-                className="px-4 py-2 bg-yellow-500 text-white rounded-full shadow-lg w-full sm:w-auto mt-4 transform transition-transform duration-200 active:scale-95"
+                className={homeButtonClass}
+                aria-label="Home"
               >
-                Nuevo
+                🏠
               </button>
             </>
           )}
