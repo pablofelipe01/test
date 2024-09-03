@@ -125,21 +125,18 @@ const VoiceRecorder: React.FC = () => {
     }
   };
 
+  const recargarPagina = () => {
+    window.location.reload();
+  };
+
   const manejarDescarga = async () => {
     if (urlAudio) {
       setCargando(true);
       const response = await fetch(urlAudio);
       const audioBlob = await response.blob();
       await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/44y6brd1r5ixmctjkiijt9c946vbrjeq', false);
-
-      const link = document.createElement('a');
-      link.href = urlAudio;
-      link.download = `${encodeURIComponent(nombreArchivo || "grabacion")}.wav`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
       setCargando(false);
+      recargarPagina();
     }
   };
 
@@ -150,6 +147,7 @@ const VoiceRecorder: React.FC = () => {
       const audioBlob = await response.blob();
       await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/bfh9n564p81snvtergwvw7ekm6vk7f1e', true);
       setCargandoEmail(false);
+      recargarPagina();
     }
   };
 
@@ -160,6 +158,7 @@ const VoiceRecorder: React.FC = () => {
       const audioBlob = await response.blob();
       await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/howh6egekmexzxv4add7k8a6uiozft3s', false);
       setCargandoCalendario(false);
+      recargarPagina();
     }
   };
 
@@ -170,15 +169,9 @@ const VoiceRecorder: React.FC = () => {
       const audioBlob = await response.blob();
       await enviarAlWebhook(audioBlob, 'https://hook.us2.make.com/6270ep5hu57b6x74qlf5y4pzp3nkrxb8', false);
       setCargandoToDo(false);
+      recargarPagina();
     }
   };
-
-  const recargarPagina = () => {
-    window.location.reload();
-  };
-
-  const buttonClass = "inline-block px-4 py-2 bg-blue-900 bg-opacity-50 text-white rounded-full shadow-lg text-center w-12 h-12 transform transition-transform duration-200 active:scale-95 border border-white";
-  const homeButtonClass = "px-4 py-2 bg-blue-900 bg-opacity-50 text-white rounded-full shadow-lg w-full sm:w-auto mt-4 transform transition-transform duration-200 active:scale-95 border border-white";
 
   const FuturisticSpinner = () => (
     <div className="relative w-12 h-12">
@@ -213,14 +206,14 @@ const VoiceRecorder: React.FC = () => {
           <button
             onClick={iniciarGrabacion}
             disabled={estaGrabando}
-            className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95 border border-white"
+            className="px-4 py-2 bg-green-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
           >
             Iniciar
           </button>
           <button
             onClick={detenerGrabacion}
             disabled={!estaGrabando}
-            className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95 border border-white"
+            className="px-4 py-2 bg-red-500 text-white rounded-full shadow-lg disabled:bg-gray-400 w-full sm:w-auto transform transition-transform duration-200 active:scale-95"
           >
             Stop
           </button>
@@ -254,58 +247,59 @@ const VoiceRecorder: React.FC = () => {
                 <option value="Test 4">Test 4</option>
                 <option value="Test 5">Test 5</option>
               </select>
-              <div className="flex justify-center space-x-2 mt-4">
-                {cargando ? (
+              {cargando ? (
+                <div className="mt-4 flex justify-center">
                   <FuturisticSpinner />
-                ) : (
-                  <button
-                    onClick={manejarDescarga}
-                    className={buttonClass}
-                    aria-label="Meeting"
-                  >
-                    🤝
-                  </button>
-                )}
-                {cargandoEmail ? (
+                </div>
+              ) : (
+                <button
+                  onClick={manejarDescarga}
+                  className="mt-4 inline-block px-4 py-2 bg-indigo-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
+                >
+                  Meeting
+                </button>
+              )}
+              {cargandoEmail ? (
+                <div className="mt-4 flex justify-center">
                   <FuturisticSpinner />
-                ) : (
-                  <button
-                    onClick={manejarEnvioEmail}
-                    className={buttonClass}
-                    aria-label="Email"
-                  >
-                    📧
-                  </button>
-                )}
-                {cargandoCalendario ? (
+                </div>
+              ) : (
+                <button
+                  onClick={manejarEnvioEmail}
+                  className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
+                >
+                  E-mail
+                </button>
+              )}
+              {cargandoCalendario ? (
+                <div className="mt-4 flex justify-center">
                   <FuturisticSpinner />
-                ) : (
-                  <button
-                    onClick={manejarEnvioCalendario}
-                    className={buttonClass}
-                    aria-label="Calendario"
-                  >
-                    📅
-                  </button>
-                )}
-                {cargandoToDo ? (
+                </div>
+              ) : (
+                <button
+                  onClick={manejarEnvioCalendario}
+                  className="mt-4 inline-block px-4 py-2 bg-purple-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
+                >
+                  Calendario
+                </button>
+              )}
+              {cargandoToDo ? (
+                <div className="mt-4 flex justify-center">
                   <FuturisticSpinner />
-                ) : (
-                  <button
-                    onClick={manejarEnvioToDo}
-                    className={buttonClass}
-                    aria-label="ToDo"
-                  >
-                    ✅
-                  </button>
-                )}
-              </div>
+                </div>
+              ) : (
+                <button
+                  onClick={manejarEnvioToDo}
+                  className="mt-4 inline-block px-4 py-2 bg-pink-500 text-white rounded-full shadow-lg w-full text-center sm:w-auto transform transition-transform duration-200 active:scale-95"
+                >
+                  ToDo
+                </button>
+              )}
               <button
                 onClick={recargarPagina}
-                className={homeButtonClass}
-                aria-label="Home"
+                className="px-4 py-2 bg-yellow-500 text-white rounded-full shadow-lg w-full sm:w-auto mt-4 transform transition-transform duration-200 active:scale-95"
               >
-                🏠
+                Home
               </button>
             </>
           )}
