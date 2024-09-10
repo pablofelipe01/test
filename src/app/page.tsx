@@ -3,16 +3,7 @@ import VoiceRecorder from "../../components/VoiceRecorder";
 
 export default function Home() {
   return (
-    <div
-      // style={{
-      //   display: "flex",
-      //   height: "100vh",
-      //   alignItems: "center",
-      //   justifyContent: "center",
-      //   flexDirection: "column",
-      //   textAlign: "center",
-      // }}
-    >
+    <div>
     
       <div
         style={{
